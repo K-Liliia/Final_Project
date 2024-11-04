@@ -1,31 +1,47 @@
 version: 2.1
 
-executors:
-  node-executor:
-    docker:
-      - image: circleci/node:14-browsers # Choose your desired Node.js version
-      - image: circleci/python:3.8 # Additional Docker image for libraries (optional)
+orbs:
+  node: circleci/node@5.0.2
+  heroku: circleci/heroku@1.2.6
 
 jobs:
-  test:
-    executor: node-executor
+  build_and_test:
+    executor: node/default
     steps:
-      - checkout # Check out your code
+      - checkout
+      - node/install-packages:
+          pkg-manager: yarn
       - run:
-          name: Clean APT Cache and Install Libraries
+          name: Install Required Libraries
           command: |
-            sudo apt-get clean && \
             sudo apt-get update && \
             sudo apt-get install -y libnss3 libxss1 libasound2
       - run:
-          name: Install Dependencies
-          command: npm install # Or yarn install if you're using Yarn
-      - run:
           name: Run Cypress Tests
-          command: npx cypress run --spec "~/AquaProjects/FinalProject/cypress/e2e/tasksTests/tasks.cy.js" # Adjust the path as necessary
+          command: yarn run cypress run --spec "cypress/e2e/tasksTests/tasks.cy.js" # Adjust the path if necessary
+      - run:
+          command: yarn build
+          name: Build app
+      - persist_to_workspace:
+          root: ~/project
+          paths:
+            - .
+
+  deploy: # this can be any name you choose
+    executor: heroku/default
+    steps:
+      - attach_workspace:
+          at: ~/project
+      - heroku/deploy-via-git:
+          force: true # force push when pushing to the heroku remote
 
 workflows:
-  version: 2
-  test:
+  test_my_app:
     jobs:
-      - test
+      - build_and_test
+      - deploy:
+          requires:
+            - build_and_test # only deploy if the build_and_test job has completed
+          filters:
+            branches:
+              only: main # only deploy when on main
