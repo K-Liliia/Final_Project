@@ -3,7 +3,7 @@ version: 2.1
 executors:
   node-executor:
     docker:
-      - image: circleci/node:14-browsers # Choose your desired Node.js version
+      - image: circleci/node:14-browsers # Node.js version with browser dependencies
       - image: circleci/python:3.8 # Additional Docker image for libraries (optional)
 
 jobs:
@@ -16,13 +16,30 @@ jobs:
           command: |
             sudo apt-get clean && \
             sudo apt-get update && \
-            sudo apt-get install -y libnss3 libxss1 libasound2
+            sudo apt-get install -y \
+              libnss3 \
+              libxss1 \
+              libasound2 \
+              xvfb \
+              libatk1.0-0 \
+              libgtk-3-0 \
+              libgdk-pixbuf2.0-0 \
+              libnotify4 \
+              libgbm1 \
+              libxrandr2
       - run:
           name: Install Dependencies
           command: npm install # Or yarn install if you're using Yarn
       - run:
+          name: Start Xvfb
+          command: |
+            Xvfb :99 -screen 0 1280x720x24 &
+            echo "Xvfb started"
+      - run:
           name: Run Cypress Tests
-          command: npx cypress run --spec "~/AquaProjects/FinalProject/cypress/e2e/tasksTests/tasks.cy.js" # Adjust the path as necessary
+          command: |
+            export DISPLAY=:99
+            npx cypress run --spec "cypress/e2e/tasksTests/tasks.cy.js" # Adjust the path as necessary
 
 workflows:
   version: 2
