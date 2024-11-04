@@ -3,7 +3,7 @@ version: 2.1
 executors:
   node-executor:
     docker:
-      - image: circleci/node:20.18.0-browsers # Use the specific Node.js version with browser support
+      - image: cimg/node:22.11.0-browsers # Use the specific Node.js version with browser support
 
 jobs:
   test:
