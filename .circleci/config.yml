@@ -4,12 +4,18 @@ executors:
   node-executor:
     docker:
       - image: circleci/node:14 # Choose your desired Node.js version
+      - image: circleci/python:3.8 # Additional Docker image for libraries (optional)
 
 jobs:
   test:
     executor: node-executor
     steps:
       - checkout # Check out your code
+      - run:
+          name: Install Required Libraries
+          command: |
+            sudo apt-get update
+            sudo apt-get install -y libnss3 libxss1 libasound2
       - run:
           name: Install Dependencies
           command: npm install # Or yarn install if you're using Yarn
