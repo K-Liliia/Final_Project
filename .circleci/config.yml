@@ -3,8 +3,8 @@ version: 2.1
 executors:
   node-executor:
     docker:
-      - image: circleci/node:14-browsers # Node.js version with browser dependencies
-      - image: circleci/python:3.8 # Additional Docker image for libraries (optional)
+      - image: circleci/node:16-browsers # Updated to a newer Node.js version with browser support
+      # Removed the additional Python image, as it's not necessary for Cypress testing
 
 jobs:
   test:
@@ -12,9 +12,8 @@ jobs:
     steps:
       - checkout # Check out your code
       - run:
-          name: Clean APT Cache and Install Libraries
+          name: Install Required Libraries
           command: |
-            sudo apt-get clean && \
             sudo apt-get update && \
             sudo apt-get install -y \
               libnss3 \
