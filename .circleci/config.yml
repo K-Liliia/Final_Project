@@ -50,17 +50,17 @@ jobs:
           name: Run Cypress Tests
           command: |
             export DISPLAY=:99
-            npx cypress run --spec "cypress/e2e/tasksTests/tasks.cy.js" --reporter mocha-junit-reporter --reporter-options "mochaFile=cypress/results/results-[hash].xml"
+            npm run test -- --spec "cypress/e2e/tasksTests/tasks.cy.js"
       - save_cache:
           paths:
             - ~/.cache/Cypress # Cache the Cypress binary
           key: cypress-cache-v1-{{ .Branch }} # Unique cache key based on branch
       - run:
-          name: generate report
-          command: npm run allure:report
+          name: Generate Allure Report
+          command: npm run allure:report # Use the script defined in package.json
       - store_artifacts:
-          path: allure-report
-          destination: CypressReport
+          path: allure-report # Save the Allure report
+          destination: allure-report # Name of the folder in CircleCI UI
 
 workflows:
   version: 2
