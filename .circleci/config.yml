@@ -44,11 +44,15 @@ jobs:
           name: Run Cypress Tests
           command: |
             export DISPLAY=:99
-            npx cypress run --spec "cypress/e2e/tasksTests/tasks.cy.js" # Adjust the path as necessary
+            npx cypress run --spec "cypress/e2e/tasksTests/tasks.cy.js" --reporter junit --reporter-options "mochaFile=cypress/results/results-[hash].xml"
+
       - save_cache:
           paths:
             - ~/.cache/Cypress # Cache the Cypress binary
           key: cypress-cache-v1-{{ .Branch }} # Unique cache key based on branch
+      - store_artifacts:
+          path: cypress/results # Directory where test results are saved
+          destination: cypress-results # Name of the folder in CircleCI UI
 
 workflows:
   version: 2
