@@ -3,7 +3,7 @@ version: 2.1
 executors:
   node-executor:
     docker:
-      - image: circleci/node:18-browsers # Updated to a newer Node.js version with browser dependencies
+      - image: circleci/node:16-browsers # Change to a confirmed available version
 
 jobs:
   test:
