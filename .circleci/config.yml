@@ -12,9 +12,10 @@ jobs:
     steps:
       - checkout # Check out your code
       - run:
-          name: Install Required Libraries
+          name: Clean APT Cache and Install Libraries
           command: |
-            sudo apt-get update
+            sudo apt-get clean && \
+            sudo apt-get update && \
             sudo apt-get install -y libnss3 libxss1 libasound2
       - run:
           name: Install Dependencies
