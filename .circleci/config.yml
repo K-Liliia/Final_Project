@@ -22,7 +22,7 @@ jobs:
           command: npm install # Or yarn install if you're using Yarn
       - run:
           name: Run Cypress Tests
-          command: npx cypress run --spec "cypress/e2e/tasksTests/tasks.cy.js" # Adjust the path as necessary
+          command: npx cypress run --spec "~/AquaProjects/FinalProject/cypress/e2e/tasksTests/tasks.cy.js" # Adjust the path as necessary
 
 workflows:
   version: 2
