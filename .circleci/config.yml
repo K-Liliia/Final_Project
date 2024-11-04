@@ -21,7 +21,7 @@ jobs:
               libasound2 \
               xvfb \
               libatk1.0-0 \
-              libcgtk-3-0 \
+              libgtk-3-0 \  # Correct package name for GTK 3
               libgdk-pixbuf2.0-0 \
               libnotify4 \
               libgbm1 \
