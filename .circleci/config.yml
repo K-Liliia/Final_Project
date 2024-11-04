@@ -3,8 +3,7 @@ version: 2.1
 executors:
   node-executor:
     docker:
-      - image: circleci/node:16-browsers # Updated to a newer Node.js version with browser support
-      # Removed the additional Python image, as it's not necessary for Cypress testing
+      - image: circleci/node:18-browsers # Updated to a newer Node.js version with browser dependencies
 
 jobs:
   test:
@@ -25,7 +24,10 @@ jobs:
               libgdk-pixbuf2.0-0 \
               libnotify4 \
               libgbm1 \
-              libxrandr2
+              libxrandr2 && \
+            # Add Google Chrome's GPG key and repository
+            wget -q -O - https://dl.google.com/linux/linux_signing_key.pub | sudo apt-key add - && \
+            echo "deb [arch=amd64] http://dl.google.com/linux/chrome/deb/ stable main" | sudo tee -a /etc/apt/sources.list.d/google-chrome.list
       - run:
           name: Install Dependencies
           command: npm install # Or yarn install if you're using Yarn
