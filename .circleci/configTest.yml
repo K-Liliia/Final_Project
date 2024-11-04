@@ -1,0 +1,66 @@
+version: 2.1
+
+orbs:
+  node: circleci/node@5.0.2
+  heroku: circleci/heroku@1.2.6
+
+jobs:
+  build_and_test:
+    executor: circleci/node:16-browsers  # Use a browsers image
+    steps:
+      - checkout
+      - run:
+          name: Install Required Libraries
+          command: |
+            sudo apt-get update && \
+            sudo apt-get install -y \
+              libnss3 \
+              libxss1 \
+              libasound2 \
+              xvfb \
+              libatk1.0-0 \
+              libgtk-3-0 \  # Correct package name for GTK 3
+              libgdk-pixbuf2.0-0 \
+              libnotify4 \
+              libgbm1 \
+              libxrandr2
+      - run:
+          name: Check Available Packages
+          command: |
+            apt-cache search libgtk-3-0 # Check if the package is available
+      - run:
+          name: Start Xvfb
+          command: |
+            Xvfb :99 -screen 0 1280x720x24 &
+            echo "Xvfb started"
+      - run:
+          name: Run Cypress Tests
+          command: |
+            export DISPLAY=:99
+            yarn run cypress run --spec "cypress/e2e/tasksTests/tasks.cy.js" # Adjust the path if necessary
+      - run:
+          command: yarn build
+          name: Build app
+      - persist_to_workspace:
+          root: ~/project
+          paths:
+            - .
+
+  deploy: # this can be any name you choose
+    executor: heroku/default
+    steps:
+      - attach_workspace:
+          at: ~/project
+      - heroku/deploy-via-git:
+          force: true # force push when pushing to the heroku remote
+
+workflows:
+  test_my_app:
+    jobs:
+      - build_and_test
+      - deploy:
+          requires:
+            - build_and_test # only deploy if the build_and_test job has completed
+          filters:
+            branches:
+              only: main # only deploy when on main
