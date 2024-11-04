@@ -55,9 +55,12 @@ jobs:
           paths:
             - ~/.cache/Cypress # Cache the Cypress binary
           key: cypress-cache-v1-{{ .Branch }} # Unique cache key based on branch
+      - run:
+          name: generate report
+          command: npm run allure:report
       - store_artifacts:
-          path: cypress/results # Directory where test results are saved
-          destination: cypress-results # Name of the folder in CircleCI UI
+          path: allure-report
+          destination: CypressReport
 
 workflows:
   version: 2
