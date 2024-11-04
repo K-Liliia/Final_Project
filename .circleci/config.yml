@@ -33,6 +33,9 @@ jobs:
           name: Install Dependencies
           command: npm install # Or yarn install if you're using Yarn
       - run:
+          name: Check node_modules
+          command: ls -la node_modules # Verify mocha is installed
+      - run:
           name: Create results directory
           command: mkdir -p cypress/results
       - run:
@@ -48,13 +51,6 @@ jobs:
           command: |
             export DISPLAY=:99
             npx cypress run --spec "cypress/e2e/tasksTests/tasks.cy.js" --reporter mocha-junit-reporter --reporter-options "mochaFile=cypress/results/results-[hash].xml"
-      - run: npm install
-      - run: mkdir ~/junit
-      - run:
-            command: mocha test --reporter mocha-junit-reporter
-            environment:
-            MOCHA_FILE: ~/junit/test-results.xml
-            when: always
       - save_cache:
           paths:
             - ~/.cache/Cypress # Cache the Cypress binary
@@ -62,8 +58,6 @@ jobs:
       - store_artifacts:
           path: cypress/results # Directory where test results are saved
           destination: cypress-results # Name of the folder in CircleCI UI
-      - store_test_results:
-          path: ~/junit
 
 workflows:
   version: 2
