@@ -3,7 +3,7 @@ version: 2.1
 executors:
   node-executor:
     docker:
-      - image: circleci/node:14 # Choose your desired Node.js version
+      - image: circleci/node:14-browsers # Choose your desired Node.js version
       - image: circleci/python:3.8 # Additional Docker image for libraries (optional)
 
 jobs:
