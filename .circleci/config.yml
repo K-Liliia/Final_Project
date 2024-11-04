@@ -17,8 +17,15 @@ jobs:
             sudo apt-get update && \
             sudo apt-get install -y libnss3 libxss1 libasound2
       - run:
+          name: Start Xvfb
+          command: |
+            Xvfb :99 -screen 0 1280x720x24 &
+            echo "Xvfb started"
+      - run:
           name: Run Cypress Tests
-          command: yarn run cypress run --spec "cypress/e2e/tasksTests/tasks.cy.js" # Adjust the path if necessary
+          command: |
+            export DISPLAY=:99
+            yarn run cypress run --spec "cypress/e2e/tasksTests/tasks.cy.js" # Adjust the path if necessary
       - run:
           command: yarn build
           name: Build app
