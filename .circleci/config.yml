@@ -6,11 +6,9 @@ orbs:
 
 jobs:
   build_and_test:
-    executor: node/default
+    executor: circleci/node:16-browsers  # Use a browsers image
     steps:
       - checkout
-      - node/install-packages:
-          pkg-manager: yarn
       - run:
           name: Install Required Libraries
           command: |
@@ -26,6 +24,10 @@ jobs:
               libnotify4 \
               libgbm1 \
               libxrandr2
+      - run:
+          name: Check Available Packages
+          command: |
+            apt-cache search libgtk-3-0 # Check if the package is available
       - run:
           name: Start Xvfb
           command: |
