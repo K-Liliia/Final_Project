@@ -3,7 +3,7 @@ version: 2.1
 executors:
   node-executor:
     docker:
-      - image: circleci/node:18-browsers # Updated to a newer Node.js version with browser dependencies
+      - image: circleci/node:16-browsers # Use a stable Node.js image with browser support
 
 jobs:
   test:
@@ -26,8 +26,8 @@ jobs:
               libgbm1 \
               libxrandr2 && \
             # Add Google Chrome's GPG key and repository
-            wget -q -O - https://dl.google.com/linux/linux_signing_key.pub | sudo gpg --dearmor -o /usr/share/keyrings/google-chrome.gpg && \
-            echo "deb [signed-by=/usr/share/keyrings/google-chrome.gpg] http://dl.google.com/linux/chrome/deb/ stable main" | sudo tee /etc/apt/sources.list.d/google-chrome.list
+            wget -q -O - https://dl.google.com/linux/linux_signing_key.pub | sudo apt-key add - && \
+            echo "deb [arch=amd64] http://dl.google.com/linux/chrome/deb/ stable main" | sudo tee /etc/apt/sources.list.d/google-chrome.list
       - run:
           name: Install Dependencies
           command: npm install # Or yarn install if you're using Yarn
